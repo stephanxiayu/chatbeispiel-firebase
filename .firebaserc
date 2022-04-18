@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "flash-chat-38d11",
+    "flash-chat": "flash-chat-38d11"
+  },
+  "targets": {}
+}

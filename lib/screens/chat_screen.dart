@@ -1,5 +1,5 @@
 import 'package:chat_lernapp/constants.dart';
-import 'package:chat_lernapp/screens/start.dart';
+
 import 'package:chat_lernapp/screens/welcome_screen.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,7 +36,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
-    print(getCurrentUser);
+
     messagesStream();
   }
 
@@ -46,18 +46,9 @@ class _ChatScreenState extends State<ChatScreen> {
         .then((value) => Navigator.pushNamed(context, WelcomeScreen.id));
   }
 
-  // void getMessages() async {
-  //   final messages = await _firestore.collection('messages').get();
-  //   for (var message in messages.docs) {
-  //     print(message.data());
-  //   }
-  // }
-
   void messagesStream() async {
     await for (var snapshot in _firestore.collection('messages').snapshots()) {
-      for (var message in snapshot.docs) {
-        print(message.data());
-      }
+      for (var message in snapshot.docs) {}
     }
   }
 

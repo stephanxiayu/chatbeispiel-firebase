@@ -1,13 +1,14 @@
 {
   "project_info": {
     "project_number": "659452171964",
+    "firebase_url": "https://flash-chat-38d11-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "flash-chat-38d11",
     "storage_bucket": "flash-chat-38d11.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:659452171964:android:dea5f0cc4224fca2aae2b9",
+        "mobilesdk_app_id": "1:659452171964:android:317ebcf5370383f7aae2b9",
         "android_client_info": {
           "package_name": "com.example.chat_lernapp"
         }
@@ -29,6 +30,13 @@
             {
               "client_id": "659452171964-7v3l7v77q283h2gpbkv0gl4dtmos2olf.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "659452171964-9nbhjo8tvvqrh3plsefurmsj70mh6llu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ios.example.chatLernapp"
+              }
             }
           ]
         }
