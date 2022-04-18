@@ -22,9 +22,9 @@ class FlashChat extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      initialRoute: Start.id,
+      initialRoute: WelcomeScreen.id,
       routes: {
-        Start.id: (context) => const Start(),
+        // Start.id: (context) => const Start(),
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         RegistrationScreen.id: (context) => const RegistrationScreen(),

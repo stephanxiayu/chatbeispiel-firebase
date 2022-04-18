@@ -1,8 +1,10 @@
 import 'package:chat_lernapp/constants.dart';
 import 'package:chat_lernapp/screens/start.dart';
 import 'package:chat_lernapp/screens/welcome_screen.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
   static String id = 'chat_screen';
@@ -13,7 +15,13 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  String? messagesText;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   User? user = FirebaseAuth.instance.currentUser;
+  String? loggedIn;
+
   void getCurrentUser() async {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
@@ -29,12 +37,28 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     getCurrentUser();
     print(getCurrentUser);
+    messagesStream();
   }
 
   Future<void> _signOut() async {
     await FirebaseAuth.instance
         .signOut()
-        .then((value) => Navigator.pushNamed(context, Start.id));
+        .then((value) => Navigator.pushNamed(context, WelcomeScreen.id));
+  }
+
+  // void getMessages() async {
+  //   final messages = await _firestore.collection('messages').get();
+  //   for (var message in messages.docs) {
+  //     print(message.data());
+  //   }
+  // }
+
+  void messagesStream() async {
+    await for (var snapshot in _firestore.collection('messages').snapshots()) {
+      for (var message in snapshot.docs) {
+        print(message.data());
+      }
+    }
   }
 
   @override
@@ -49,7 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
               onPressed: () async {
                 await FirebaseAuth.instance.signOut().then((value) =>
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const Start())));
+                        builder: (context) => const WelcomeScreen())));
               }),
         ],
         title: const Text('⚡️Chat'),
@@ -60,22 +84,52 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            StreamBuilder<QuerySnapshot>(
+                stream: _firestore.collection('messages').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final messages = snapshot.data!.docs;
+                    List<Text> messageWidgets = [];
+                    for (var message in messages) {
+                      final messageSenderText = message['text'];
+                      final messageSender = message['sender'];
+                      final messageWidget =
+                          Text('$messageSender from: $messageSenderText');
+
+                      messageWidgets.add(messageWidget);
+                    }
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: messageWidgets.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(messageWidgets[index].data!),
+                          );
+                        });
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
                     child: TextField(
                       onChanged: (value) {
-                        //Do something with the user input.
+                        messagesText = value;
                       },
                       decoration: kMessageTextFieldDecoration,
                     ),
                   ),
                   TextButton(
                     onPressed: () {
-                      //Implement send functionality.
+                      _firestore.collection('messages').add({
+                        'text': messagesText,
+                        'sender': user!.email,
+                      });
                     },
                     child: const Text(
                       'Send',
