@@ -1,6 +1,7 @@
 import 'package:chat_lernapp/screens/chat_screen.dart';
 import 'package:chat_lernapp/screens/login_screen.dart';
 import 'package:chat_lernapp/screens/registration_screen.dart';
+import 'package:chat_lernapp/screens/start.dart';
 import 'package:chat_lernapp/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,8 +22,9 @@ class FlashChat extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      initialRoute: WelcomeScreen.id,
+      initialRoute: Start.id,
       routes: {
+        Start.id: (context) => const Start(),
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         RegistrationScreen.id: (context) => const RegistrationScreen(),

@@ -1,4 +1,7 @@
 import 'package:chat_lernapp/constants.dart';
+import 'package:chat_lernapp/screens/start.dart';
+import 'package:chat_lernapp/screens/welcome_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -10,6 +13,30 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  User? user = FirebaseAuth.instance.currentUser;
+  void getCurrentUser() async {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print(user.email);
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+    print(getCurrentUser);
+  }
+
+  Future<void> _signOut() async {
+    await FirebaseAuth.instance
+        .signOut()
+        .then((value) => Navigator.pushNamed(context, Start.id));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,9 +45,11 @@ class _ChatScreenState extends State<ChatScreen> {
         leading: null,
         actions: <Widget>[
           IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                //Implement logout functionality
+              icon: const Icon(Icons.exit_to_app_outlined),
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut().then((value) =>
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const Start())));
               }),
         ],
         title: const Text('⚡️Chat'),
